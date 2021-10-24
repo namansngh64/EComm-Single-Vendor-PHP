@@ -1,0 +1,9 @@
+<?php 
+    session_start();
+    unset($_SESSION['id']);
+    unset($_SESSION['name']);
+    setcookie("id","",time()-3600);
+    setcookie("name","",time()-3600);
+    setcookie("pid","",time()-3600);
+    header("Location:login.php");
+?>

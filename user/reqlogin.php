@@ -1,0 +1,42 @@
+<?php 
+    if(isset($_POST['login'])){
+    session_start();
+    include("connection.php");
+    $user1=input_test($_POST['user']);
+    $pass1=input_test($_POST['pass']);
+    $query="Select * from ".db_admin." where `userid`='$user1'";
+    $result=mysqli_query($con,$query);
+    if(!($row=mysqli_fetch_array($result))){
+        $_SESSION['msg']="ude";
+        header("Location:login.php");
+    }
+    else{
+        if($row[3]!=$pass1){
+            $_SESSION['msg']="pnm";
+            header("Location:login.php");
+        }
+        else{
+            if($row[5]=='0'){
+                $_SESSION['otp']=rand(10000,99999);
+                $_SESSION['user']=$user1;
+                header("Location:verify.php");
+            }else{
+                $_SESSION['id']=$user1;
+                $_SESSION['name']=$row[0]."\t".$row[1];
+                $_SESSION['pid']=$row[4];
+                if(isset($_POST['remember'])){
+                    $time=30*24*60*60;
+                    setcookie("id",$_SESSION['id'],time()+$time);
+                    setcookie("name",$_SESSION['name'],time()+$time);
+                    setcookie("pid",$_SESSION['pid'],time()+$time);
+                }
+               // mkdir("uploads/image/".$_SESSION['pid']);
+                header("Location:main.php");
+            }
+        }
+    }
+    }else{
+        unset($_SESSION['msg']);
+        header("Location:login.php");
+    }
+?>
